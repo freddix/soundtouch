@@ -1,11 +1,11 @@
 Summary:	Sound processing library
 Name:		soundtouch
-Version:	1.6.0
+Version:	1.8.0
 Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://www.surina.net/soundtouch/%{name}-%{version}.tar.gz
-# Source0-md5:	aa1c63d4d67b033f044a6a48d2be5bdd
+# Source0-md5:	d02c6c91cb13901ca273a2b4b143ce41
 URL:		http://www.surina.net/soundtouch/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -45,8 +45,8 @@ programs.
 %prep
 %setup -qn %{name}
 
-# kill DOS eols
-%{__perl} -pi -e 's/\r$//' soundtouch.m4
+# unDOS
+%{__sed} -i -e 's/\r$//' soundtouch.m4
 
 %build
 %{__libtoolize}
@@ -55,6 +55,7 @@ programs.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-silent-rules	\
 	--disable-static	\
 	--enable-shared
 %{__make}
@@ -64,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,7 +83,6 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
 %{_includedir}/soundtouch
 %{_aclocaldir}/soundtouch.m4
 %{_pkgconfigdir}/soundtouch.pc
